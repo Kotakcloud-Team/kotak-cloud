@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload</title>
+
+    <script src="../../dist/umd/kotakcloud.js"></script>
+  </head>
+  <body>
+    <input type="file" name="file" multiple />
+
+    <script>
+      const kotakCloud = new kotakcloud.KotakCloudClient({
+        token: "2bd1180b36e826ca49952be66b0f1aa6",
+        mocking: true,
+      });
+      const input = document.querySelector("input");
+
+      input.addEventListener("change", handleFileSelect);
+
+      async function handleFileSelect(event) {
+        const files = event.target.files;
+        await kotakCloud.uploadFiles(files, console.log);
+      }
+    </script>
+  </body>
+</html>
