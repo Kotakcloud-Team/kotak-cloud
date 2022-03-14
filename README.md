@@ -15,7 +15,7 @@ npm install --save @kontenbase/kotak-cloud
 ```js
 const { KotakCloudClient } = require("@kontenbase/kotak-cloud");
 
-const kotakCloud = new KotakCloudClient();
+const kotakCloud = new KotakCloudClient({});
 ```
 
 ## Authentication
