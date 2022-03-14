@@ -1,7 +1,7 @@
 {
-  "name": "kotak-cloud",
+  "name": "@kontenbase/kotak-cloud",
   "version": "0.0.1",
-  "description": "Kotak Cloud SDK",
+  "description": "Client SDK to use Kotak Cloud",
   "main": "dist/main/index.js",
   "types": "dist/main/index.d.ts",
   "module": "dist/module/index.js",
