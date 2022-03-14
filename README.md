@@ -1,6 +1,6 @@
 # KotakCloud SDK
 
-This is the Official Browser client/library for [kotak.cloud](kotak.cloud) API.
+This is the Official Browser client/library for [kotak.cloud](https://kotak.cloud) API.
 
 ## Installation
 
