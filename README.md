@@ -7,15 +7,15 @@ This is the Official Browser client/library for [kotak.cloud](https://kotak.clou
 To install kotakcloud in a node project:
 
 ```bash
-npm install --save @kontenbase/kotak-cloud
+npm install --save kotak-cloud
 ```
 
 ## Usage
 
 ```js
-const { KotakCloudClient } = require("@kontenbase/kotak-cloud");
+const { KotakCloudClient } = require("kotak-cloud");
 
-const kotakCloud = new KotakCloudClient({});
+const kotakCloud = new KotakCloudClient();
 ```
 
 ## Authentication

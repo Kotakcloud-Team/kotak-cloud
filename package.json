@@ -1,5 +1,5 @@
 {
-  "name": "@kontenbase/kotak-cloud",
+  "name": "kotak-cloud",
   "version": "0.0.1",
   "description": "Client SDK to use Kotak Cloud",
   "main": "dist/main/index.js",
@@ -14,7 +14,7 @@
     "test": "jest",
     "test:watch": "jest --watch --verbose false --silent false"
   },
-  "author": "Kontenbase",
+  "author": "kotakcloud",
   "license": "MIT",
   "dependencies": {
     "@kontenbase/sdk": "^0.6.3",
@@ -37,7 +37,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kontenbase/kotak-cloud.git"
+    "url": "git+https://github.com/Kotakcloud-Team/kotak-cloud.git"
   },
   "keywords": [
     "kotak-cloud",
@@ -46,9 +46,9 @@
     "sdk"
   ],
   "bugs": {
-    "url": "https://github.com/kontenbase/kotak-cloud/issues"
+    "url": "https://github.com/Kotakcloud-Team/kotak-cloud/issues"
   },
-  "homepage": "https://github.com/kontenbase/kotak-cloud#readme",
+  "homepage": "https://github.com/Kotakcloud-Team/kotak-cloud#readme",
   "jsdelivr": "dist/umd/kotakcloud.js",
   "unpkg": "dist/umd/kotakcloud.js"
 }
