@@ -48,32 +48,21 @@ export default class KotakCloudClient {
       apiKey: "ef7523a3-cb9a-488f-ba10-e935053af794",
     });
 
-    if (options) {
-      const {
-        url,
-        token,
-        chunkSize = 512, // in kb
-        maxPool = 3,
-        maxRetry = 3,
-        apiVersion,
-      } = options;
-
-      if (url) {
-        this.url = url;
-      } else {
-        this.switchVersion(apiVersion);
-      }
-
-      if (token) {
-        this.saveToken(token);
-      } else {
-        this.saveToken(this.kontenbase.auth.token());
-      }
-
-      this.maxRetry = maxRetry;
-      this.maxPool = maxPool;
-      this.validateChunkSize(chunkSize);
+    if (options?.url) {
+      this.url = options.url;
+    } else {
+      this.switchVersion(options?.apiVersion);
     }
+
+    if (options?.token) {
+      this.saveToken(options.token);
+    } else {
+      this.saveToken(this.kontenbase.auth.token());
+    }
+
+    if (options?.maxRetry) this.maxRetry = options.maxRetry;
+    if (options?.maxPool) this.maxPool = options.maxPool;
+    if (options?.chunkSize) this.validateChunkSize(options.chunkSize);
   }
 
   private switchVersion = (apiVersion?: string) => {
