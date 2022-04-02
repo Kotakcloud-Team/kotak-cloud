@@ -1,6 +1,8 @@
 import {
   FindOption,
   KontenbaseClient,
+  KontenbaseCount,
+  KontenbaseResponse,
   KontenbaseSingleResponse,
 } from "@kontenbase/sdk";
 import {
@@ -9,12 +11,14 @@ import {
   ProfileResponse,
 } from "@kontenbase/sdk/dist/main/auth";
 import axios, { AxiosInstance } from "axios";
-import { Breadcrumb, KotakCloudFile, Retry } from ".";
 
 import {
+  Breadcrumb,
   Chunk,
   FileUpload,
   KotakCloudClientOptions,
+  KotakCloudFile,
+  Retry,
   UploadTask,
   User,
 } from "./types";
@@ -152,7 +156,7 @@ export default class KotakCloudClient {
     let response = await this.kontenbase.auth.user<User>();
 
     if (response.user) {
-      if (response.user.role[0] === "620c7627d04e01ea8b568a8c") {
+      if (response.user.role[0] === "admin") {
         response.user.role = "admin";
       } else {
         response.user.role = "authenticated";
@@ -422,10 +426,6 @@ export default class KotakCloudClient {
       delete filterFiles.where?.parentId;
       delete filterFolders.where?.folder;
     } else {
-      // filterFiles.where = {
-      //   ...filter?.where,
-      //   folder: `${parentId}`,
-      // };
       filterFolders.where = {
         ...filter.where,
         parentId: "",
@@ -496,29 +496,44 @@ export default class KotakCloudClient {
     const parent = filter?.where?.parentId || filter?.where?.folder;
     const [filterFiles, filterFolders] = this.buildQuery(user, filter);
 
-    const responses = await Promise.all(
-      ["files", "folders"].map((service) =>
+    const responses = await Promise.all([
+      ...["files", "folders"].map((service) =>
         this.kontenbase
           .service<KotakCloudFile>(service)
           .find(service === "files" ? filterFiles : filterFolders)
-      )
-    );
+      ),
+      ...["files", "folders"].map(
+        (service) =>
+          this.kontenbase
+            .service<KotakCloudFile>(service)
+            .count(service === "files" ? filterFiles : filterFolders)
+      ),
+    ]);
 
     let [
-      { data: files, count: filesCount, error: filesError },
-      { data: folders, count: foldersCount, error: foldersError },
+      { data: files, ...filesResponse },
+      { data: folders, ...foldersResponse },
+      { data: filesCount },
+      { data: foldersCount },
     ] = responses;
+
+    files = files as KotakCloudFile[];
+    folders = folders as KotakCloudFile[];
+    filesCount = (filesCount as KontenbaseCount);
+    foldersCount = (foldersCount as KontenbaseCount);
 
     if (
       files &&
       folders &&
-      typeof filesCount === "number" &&
-      typeof foldersCount === "number"
+      typeof filesCount?.count === "number" &&
+      typeof foldersCount?.count === "number"
     ) {
+      
+
       if (!parent) {
         let filteredCount = 0;
-        files = files.filter((file) => {
-          const isRoot = file.folder?.length === 0;
+        files = files.filter((file: KotakCloudFile) => {
+          const isRoot = !file.folder || file.folder?.length === 0;
           if (!isRoot) {
             filteredCount++;
           }
@@ -526,7 +541,7 @@ export default class KotakCloudClient {
           return isRoot;
         });
 
-        filesCount -= filteredCount;
+        filesCount.count -= filteredCount;
       }
 
       this.currentTotal = {
@@ -543,9 +558,9 @@ export default class KotakCloudClient {
       }
 
       return {
-        total: foldersCount + filesCount,
+        total: foldersCount.count + filesCount.count,
         data: [
-          ...folders.map((folder) => ({
+          ...folders.map((folder: KotakCloudFile) => ({
             ...folder,
             id: folder._id,
             info: `${folder.createdAt}`,
@@ -554,13 +569,13 @@ export default class KotakCloudClient {
               mimetype: "folder",
             },
           })),
-          ...files.map((file) => ({
+          ...files.map((file: KotakCloudFile) => ({
             ...file,
             id: file._id,
             url: file?.url || `${this.url}/file/${file._id}`,
             meta: {
               name: file.name,
-              mimetype: file.mimetype,
+              mimetype: file.mimetype || "application/octet-stream",
             },
             info: file.messageId
               ? `${file.createdAt}`
@@ -574,7 +589,11 @@ export default class KotakCloudClient {
       total: 0,
       data: [],
       error: {
-        message: filesError?.message || foldersError?.message,
+        message:
+          (filesResponse as KontenbaseResponse<KotakCloudFile>)?.error
+            ?.message ||
+          (foldersResponse as KontenbaseResponse<KotakCloudFile>)?.error
+            ?.message,
       },
     };
   };

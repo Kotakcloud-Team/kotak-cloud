@@ -1,6 +1,6 @@
 {
   "name": "kotak-cloud",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Client SDK to use Kotak Cloud",
   "main": "dist/main/index.js",
   "types": "dist/main/index.d.ts",
@@ -17,7 +17,7 @@
   "author": "kotakcloud",
   "license": "MIT",
   "dependencies": {
-    "@kontenbase/sdk": "^0.6.3",
+    "@kontenbase/sdk": "^0.7.2",
     "axios": "^0.26.0",
     "path": "^0.12.7"
   },
